@@ -1,27 +1,23 @@
 from flask import Flask, render_template, request, jsonify
-import os
 import joblib
 
 app = Flask(__name__)
 
-# Set the template folder
-app.template_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
-
-# Load models and vectorizer
+vectorization = joblib.load('models/vectorizer.pkl')
 LR = joblib.load('models/lr_model.pkl')
 DT = joblib.load('models/dt_model.pkl')
 RF = joblib.load('models/rf_model.pkl')
-vectorization = joblib.load('models/vectorizer.pkl')
+
 
 def wordopt(text):
     import re, string
     text = text.lower()
-    text = re.sub('\[.*?\]','',text)
-    text = re.sub("\\W"," ",text)
-    text = re.sub('https?://\S+|www\.\S+','',text)
-    text = re.sub('<.*?>+',b'',text)
-    text = re.sub('[%s]' % re.escape(string.punctuation),'',text)
-    text = re.sub('\w*\d\w*','',text)
+    text = re.sub(r'\[.*?\]', '', text)
+    text = re.sub(r"\W", " ", text)
+    text = re.sub(r'https?://\S+|www\.\S+', '', text)
+    text = re.sub(r'<.*?>+', b'', text)
+    text = re.sub(r'[%s]' % re.escape(string.punctuation), '', text)
+    text = re.sub(r'\w*\d\w*', '', text)
     return text
 
 def output_lable(n):
@@ -45,6 +41,8 @@ def manual_testing(news):
         "Decision Tree": output_lable(pred_DT[0]),
         "Random Forest": output_lable(pred_RF[0])
     }
+
+
 
 @app.route('/')
 @app.route('/index')
