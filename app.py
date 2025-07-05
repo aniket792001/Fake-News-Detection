@@ -34,13 +34,7 @@ def manual_testing(news):
     new_x_test = new_def_test["text"]
     new_xv_test = vectorization.transform(new_x_test)
     pred_LR = LR.predict(new_xv_test)
-    pred_DT = DT.predict(new_xv_test)
-    pred_RF = RF.predict(new_xv_test)
-    return {
-        "Logistic Regression": output_lable(pred_LR[0]),
-        "Decision Tree": output_lable(pred_DT[0]),
-        "Random Forest": output_lable(pred_RF[0])
-    }
+    return output_lable(pred_LR[0])
 
 
 
@@ -54,7 +48,7 @@ def get_data():
     data = request.get_json()
     news = data.get('text', '')
     result = manual_testing(news)
-    return jsonify(result)
+    return jsonify({'result': result})
 
 if __name__ == '__main__':
     app.run(debug=True)
